@@ -27,7 +27,7 @@ export function InputForm({title, setText, handleSubmit}: InputFormType) {
   return (
     <div className="h-[40rem] flex flex-col justify-center  items-center px-4">
       <h2 className="mb-10 sm:mb-20 text-xl text-center sm:text-5xl dark:text-white text-black capitalize">
-        Ask Anything About {title}
+        Test. <span className="text-rose-500">Learn.</span> Master.
       </h2>
       <PlaceholdersAndVanishInput
         placeholders={placeholders}

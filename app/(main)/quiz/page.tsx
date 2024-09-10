@@ -6,7 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { collection, doc, getDoc, writeBatch } from "firebase/firestore";
 import { db } from "@/firebase";
 import Navbar from "../../../components/navbar";
-import { useFlashCardStore } from "@/app/hooks/use-flashcard-store";
+import { Flashcards, useFlashCardStore } from "@/app/hooks/use-flashcard-store";
 import { useRouter } from "next/navigation";
 
 const WritingPage = () => {
@@ -39,6 +39,7 @@ const WritingPage = () => {
       const data = await response.json();
       console.log("Console log from the function", data);
       setFlashCards(data);
+      localStorage.setItem("quiz", JSON.stringify(data));
       router.push('/quiz/questions');
     } catch (error) {
       console.error("Error generating flashcards:", error);
@@ -93,7 +94,7 @@ const WritingPage = () => {
   };
 
   return (
-    <div>
+    <div className="h-full">
       <Navbar />
       <InputForm
         title="writing"

@@ -31,7 +31,9 @@ import { useFlashCardStore } from "@/app/hooks/use-flashcard-store";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { color } from "framer-motion";
-import { redirect, useRouter } from "next/navigation";
+import Loading from "@/components/ui/loading";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const FormSchema = z.object({
   items: z
@@ -149,7 +151,33 @@ const FormSchema = z.object({
 //   },
 // ];
 
-const colors = [
+export const bgColorMap = [
+  "bg-red-200",
+  "bg-blue-200",
+  "bg-green-200",
+  "bg-yellow-200",
+  "bg-purple-200",
+  "bg-orange-200",
+  "bg-pink-200",
+  "bg-teal-200",
+  "bg-gray-200",
+  "bg-indigo-200",
+];
+
+export const borderColorMap = [
+  "border-red-200",
+  "border-blue-200",
+  "border-green-200",
+  "border-yellow-200",
+  "border-purple-200",
+  "border-orange-200",
+  "border-pink-200",
+  "border-teal-200",
+  "border-gray-200",
+  "border-indigo-200",
+];
+
+export const colors = [
   "red",
   "blue",
   "green",
@@ -162,18 +190,22 @@ const colors = [
   "indigo",
 ];
 
-function getRandomColor() {
-  const randomIndex = Math.floor(Math.random() * colors.length);
-  return colors[randomIndex];
-}
-
-// Example usage: Get a random color
-// const randomColor = getRandomColor();
-// console.log(randomColor); // Outputs a random color from the array
-
 export function FlashcardContainer() {
-  const { flashCards } = useFlashCardStore();
+  const { flashCards, setFlashCards } = useFlashCardStore();
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  // console.log("Local Storage" ,JSON.parse(data!));
+
+  useEffect(() => {
+    const data = localStorage.getItem("quiz");
+    if (data?.length) {
+      setFlashCards(JSON.parse(data!));
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+  }, [setFlashCards]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -182,6 +214,7 @@ export function FlashcardContainer() {
     },
   });
 
+  let submited = form.formState.isSubmitted;
   console.log(form.watch("items"));
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -195,10 +228,13 @@ export function FlashcardContainer() {
     // })
   }
 
-  if(flashCards.length < 10){
-    return redirect("/quiz");
+  if (flashCards.length < 10 && loading) {
+    return (
+      <div className="mt-24">
+        <Loading />
+      </div>
+    );
   }
-
   return (
     <Carousel className="w-full mx-auto max-w-sm mt-20">
       <Form {...form}>
@@ -236,17 +272,14 @@ export function FlashcardContainer() {
                                       key={item.key}
                                       className={cn(
                                         `transition duration-200 ease-out hover:cursor-pointer flex flex-row items-center space-x-3 space-y-0 pl-3  rounded-md border`,
-                                        `hover:bg-${colors[i]}-200`,
-                                        field.value?.some((value) => value.key === item.key)
-                                          ? `bg-${colors[i]}-200 ` // Adjusted to directly apply the background color when checked
-                                          : ""
+                                        `hover:bg-${colors[i]}-200`
                                       )}
                                     >
                                       <FormControl>
                                         <Checkbox
-                                          color={colors[i]}
+                                          // color={colors[i]}
                                           className={cn(
-                                            "rounded-full",
+                                            "rounded-full"
                                             // field.value?.some((value) => value.value === item.text)
                                             //   ? `bg-${colors[i]}-600 border-red-500` // Adjusted to directly apply the background color when checked
                                             //   : "border-primary/70"
@@ -260,14 +293,14 @@ export function FlashcardContainer() {
                                               ? field.onChange([
                                                   ...field.value.filter(
                                                     (item) =>
-                                                      !flashCard.options?.some(
+                                                      flashCard.options?.some(
                                                         (option) =>
                                                           option.key ===
                                                           item.key
                                                       )
                                                   ),
                                                   {
-                                                    key: item.key.toString(),
+                                                    key: i.toString(),
                                                     value: item.value,
                                                   }, // Ensure you add the correct key-value pair
                                                 ])

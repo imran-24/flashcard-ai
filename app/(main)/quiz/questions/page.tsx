@@ -5,7 +5,7 @@ import Navbar from '@/components/navbar';
 const QuestionsPage = () => {
 
   return (
-    <div className=''>
+    <div className='min-h-full'>
       <Navbar/>
       <FlashcardContainer />
     </div>

@@ -25,12 +25,12 @@ Return the flashcards in the following JSON format:
   {
     "question": "Question text",
     "options": [
-      { "key": "uniqueKey", "value": "optionA" },
-      { "key": "uniqueKey", "value": "optionB" },
-      { "key": "uniqueKey", "value": "optionC" },
-      { "key": "uniqueKey", "value": "optionD" }
+      { "key": unique id, "value": "optionA" },
+      { "key": unique id, "value": "optionB" },
+      { "key": unique id, "value": "optionC" },
+      { "key": unique id, "value": "optionD" }
     ],
-    "correctAnswer": "uniqueKey"
+    "correctAnswer": unique id
   }
 ]
 }`;
